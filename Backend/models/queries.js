@@ -97,3 +97,12 @@ export async function createProject(
     return { success: false, message: "Error creating project" };
   }
 }
+export async function findProjectById(id) {
+  const [rows] = await pool.query(
+    `
+    SELECT * FROM projects 
+    WHERE owner_id = ${id}
+  `
+  );
+  return { success: true, message: rows };
+}

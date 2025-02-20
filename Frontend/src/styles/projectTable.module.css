@@ -1,0 +1,47 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.projectTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.projectTable th,
+.projectTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.projectTable th {
+  background-color: #000000;
+  font-weight: bold;
+}
+
+.editBtn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.deleteBtn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.editBtn:hover {
+  background-color: #45a049;
+}
+
+.deleteBtn:hover {
+  background-color: #d32f2f;
+}

@@ -46,7 +46,7 @@ function MyProjects() {
 
   return (
     <div>
-      <h2>Project List</h2>
+      <h2>My Projects List</h2>
       <ProjectTable
         projects={projects}
         onEdit={handleEdit}

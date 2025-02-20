@@ -58,3 +58,6 @@ FROM project_members
 JOIN projects ON project_members.project_id = projects.id
 JOIN users ON project_members.user = users.id
 WHERE projects.id = 2;
+
+DELETE FROM users
+where id between 9 and 13

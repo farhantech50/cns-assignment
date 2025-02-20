@@ -8,6 +8,7 @@ import {
   createUser,
   getAllUsers,
   getUserByUsername,
+  getUserByID,
 } from "../models/queries.js";
 
 export const loginUser = async (req, res) => {

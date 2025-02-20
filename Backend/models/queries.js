@@ -61,37 +61,40 @@ export async function createProject(
   projectMembers
 ) {
   try {
-    return pool
-      .query(
-        `
+    const res = await pool.query(
+      `
       INSERT INTO projects (name, intro, owner_id, status, startDateTime, endDateTime)
       VALUES (?, ?, ?, ?, ?, ?)
       `,
-        [name, intro, ownerId, status, startDateTime, endDateTime]
-      )
-      .then(async (res) => {
-        const values = projectMembers.map((userId) => [
-          res[0].insertId,
-          userId,
-        ]);
-        return pool.query(
-          `
-        INSERT INTO project_members (project_id, user) VALUES ?
-        `,
-          [values]
-        );
-      })
-      .then((res) => {
-        // Check if affectedRows is greater than 0, indicating success
-        if (res[0].affectedRows > 0) {
-          return { success: true };
-        } else {
-          return {
-            success: false,
-            message: "No members were added to the project",
-          };
-        }
-      });
+      [name, intro, ownerId, status, startDateTime, endDateTime]
+    );
+
+    const projectId = res[0].insertId;
+
+    if (!projectMembers.length) {
+      return {
+        success: false,
+        message: "No members were added to the project",
+      };
+    }
+
+    // Insert project members
+    const values = projectMembers.map((userId) => [projectId, userId]);
+    const memberRes = await pool.query(
+      `
+      INSERT INTO project_members (project_id, user) VALUES ?
+      `,
+      [values]
+    );
+
+    if (memberRes[0].affectedRows > 0) {
+      return { success: true };
+    } else {
+      return {
+        success: false,
+        message: "Error adding members to the project",
+      };
+    }
   } catch (error) {
     console.error("Error creating project:", error);
     return { success: false, message: "Error creating project" };
@@ -132,4 +135,16 @@ export async function findAllProject() {
   `
   );
   return { success: true, message: rows };
+}
+
+export async function getUserByID(id) {
+  const [rows] = await pool.query(
+    `
+  SELECT * 
+  FROM users
+  WHERE id = ?
+  `,
+    [id]
+  );
+  return rows[0].name;
 }

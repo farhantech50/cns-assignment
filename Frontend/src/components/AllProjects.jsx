@@ -35,13 +35,13 @@ function AllProjects() {
 
   return (
     <div>
+      <h2>All Projects List</h2>
       <ProjectTable projects={projects} onView={handleView} />
       <Modal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         project={selectedProject}
       />
-      ;
     </div>
   );
 }

@@ -10,6 +10,7 @@ const CreateProjectForm = ({ currentUser }) => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showFailDialog, setShowFailDialog] = useState(false);
   const { project } = useCreateProject();
+  const [signupError, setSignupError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     intro: "",
@@ -48,11 +49,6 @@ const CreateProjectForm = ({ currentUser }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    // Clear startDateTime if status is 'Pre'
-    if (name === "status" && value === "pre") {
-      setFormData((prev) => ({ ...prev, startDateTime: "" }));
-    }
   };
   // Function to handle signup success
   const handleSignupSuccess = () => {
@@ -92,18 +88,29 @@ const CreateProjectForm = ({ currentUser }) => {
       setError("End date cannot be before start date.");
       return;
     }
-    const response = await project(
-      formData.name,
-      formData.intro,
-      authUser.userId,
-      formData.status,
-      formData.startDateTime,
-      formData.endDateTime,
-      formData.projectMembers
-    );
-    if (response.success == true) {
-      handleSignupSuccess();
-    } else {
+    try {
+      const response = await project(
+        formData.name,
+        formData.intro,
+        authUser.userId,
+        formData.status,
+        formData.startDateTime,
+        formData.endDateTime,
+        formData.projectMembers
+      );
+
+      if (response.success) {
+        handleSignupSuccess();
+      } else {
+        setSignupError(response.message);
+        handleSignupFail();
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 500) {
+        console.log(error);
+      } else {
+        console.error("Unexpected error:", error.message || error);
+      }
       handleSignupFail();
     }
   };
@@ -215,16 +222,16 @@ const CreateProjectForm = ({ currentUser }) => {
           <label>Project Members:</label>
           <div
             style={{
-              maxHeight: "200px", // Set the height for the scrollable area
-              overflowY: "scroll", // Enable vertical scrolling
-              border: "1px solid #ccc", // Optional: adds a border for better visibility
+              maxHeight: "200px",
+              overflowY: "scroll",
+              border: "1px solid #ccc",
               padding: "10px",
             }}
           >
             {members.map((member) => {
               return (
                 <div key={Math.random()}>
-                  <label>
+                  <label required>
                     <input
                       type="checkbox"
                       value={member.id}
@@ -255,7 +262,7 @@ const CreateProjectForm = ({ currentUser }) => {
       {/* Dialog Box */}
       {showFailDialog && (
         <div className={styles.failDialogBox}>
-          <p>Error creating project!</p>
+          <p>{signupError}</p>
         </div>
       )}
     </div>

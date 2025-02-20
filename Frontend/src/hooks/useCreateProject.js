@@ -25,14 +25,20 @@ const createProject = () => {
         endDateTime,
         projectMembers,
       });
-      if (res.data.error || res == undefined) {
-        return { success: false, message: "Internal Server Error" };
-      } else {
-        return { success: true, message: res.data };
-      }
+      return { success: true, message: res.data };
     } catch (error) {
-      if (error) {
-        return { success: false, response: "Internal Server Error" };
+      if (error.response.status == 500) {
+        // The request was made and the server responded with an error
+        return {
+          success: false,
+          message: error.response.data.message || "Server Error",
+        };
+      } else if (error.request) {
+        // The request was made but no response was received
+        return { success: false, message: "No response from server" };
+      } else {
+        // Something else happened
+        return { success: false, message: "Unexpected Error" };
       }
     }
   };

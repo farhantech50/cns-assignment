@@ -4,6 +4,7 @@ import {
   findProjectMembers,
   findAllProject,
 } from "../models/queries.js";
+import { getUserByID } from "../models/queries.js";
 
 export const newProject = async (req, res) => {
   try {
@@ -17,7 +18,7 @@ export const newProject = async (req, res) => {
       projectMembers,
     } = req.body;
 
-    createProject(
+    const result = await createProject(
       name,
       intro,
       ownerId,
@@ -25,24 +26,33 @@ export const newProject = async (req, res) => {
       startDateTime,
       endDateTime,
       projectMembers
-    ).then((result) => {
-      if (result.success) {
-        res.status(200).json({ message: "Project created successfully!" });
-      } else {
-        res.status(500).json({ message: result.message });
-      }
-    });
+    );
+
+    if (result.success) {
+      return res.status(200).json({ message: "Project created successfully!" });
+    } else {
+      return res.status(500).json({ message: result.message });
+    }
   } catch (error) {
-    res.status(500).json({ message: error });
+    return res.status(500).json({
+      message: "Internaadasdsl Server Error",
+      error: error.message || "Unknown error",
+    });
   }
 };
 
 export const projectById = async (req, res) => {
   const { id } = req.params;
   try {
-    findProjectById(id).then((result) => {
+    findProjectById(id).then(async (result) => {
+      const updated = await Promise.all(
+        result.message.map(async (data) => {
+          const ownerName = await getUserByID(data.owner_id);
+          return { ...data, owner_id: ownerName };
+        })
+      );
       if (result.success) {
-        res.status(200).json({ message: result.message });
+        res.status(200).json({ message: updated });
       } else {
         res.status(500).json({ message: "Internal Server Error" });
       }
@@ -54,9 +64,15 @@ export const projectById = async (req, res) => {
 
 export const allProject = async (req, res) => {
   try {
-    findAllProject().then((result) => {
+    findAllProject().then(async (result) => {
+      const updated = await Promise.all(
+        result.message.map(async (data) => {
+          const ownerName = await getUserByID(data.owner_id);
+          return { ...data, owner_id: ownerName };
+        })
+      );
       if (result.success) {
-        res.status(200).json({ message: result.message });
+        res.status(200).json({ message: updated });
       } else {
         res.status(500).json({ message: "Internal Server Error" });
       }

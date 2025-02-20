@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../styles/projectTable.module.css";
 
-const ProjectTable = ({ projects, onEdit, onDelete }) => {
+const ProjectTable = ({ projects, onEdit, onDelete, onView }) => {
   return (
     <div className={styles.tableContainer}>
       <table className={styles.projectTable}>
@@ -26,6 +26,12 @@ const ProjectTable = ({ projects, onEdit, onDelete }) => {
               <td>{String(project.startDateTime).slice(0, 10)}</td>
               <td>{String(project.endDateTime).slice(0, 10)}</td>
               <td>
+                <button
+                  className={styles.viewBtn}
+                  onClick={() => onView(project.id)}
+                >
+                  View
+                </button>
                 <button
                   className={styles.editBtn}
                   onClick={() => onEdit(project.id)}

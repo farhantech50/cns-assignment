@@ -1,4 +1,9 @@
-import { createProject, findProjectById } from "../models/queries.js";
+import {
+  createProject,
+  findProjectById,
+  findProjectMembers,
+  findAllProject,
+} from "../models/queries.js";
 
 export const newProject = async (req, res) => {
   try {
@@ -36,6 +41,36 @@ export const projectById = async (req, res) => {
   const { id } = req.params;
   try {
     findProjectById(id).then((result) => {
+      if (result.success) {
+        res.status(200).json({ message: result.message });
+      } else {
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
+export const allProject = async (req, res) => {
+  try {
+    findAllProject().then((result) => {
+      if (result.success) {
+        res.status(200).json({ message: result.message });
+      } else {
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
+export const projectMembers = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    findProjectMembers(id).then((result) => {
       if (result.success) {
         res.status(200).json({ message: result.message });
       } else {

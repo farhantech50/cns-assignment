@@ -30,6 +30,15 @@
   cursor: pointer;
 }
 
+.viewBtn {
+  background-color: #0b8fa7;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
 .deleteBtn {
   background-color: #f44336;
   color: white;

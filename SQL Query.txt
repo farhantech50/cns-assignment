@@ -53,27 +53,8 @@ ADD FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE;
 
 
 
-
-
-
-import { createContext, useContext, useState } from "react";
-
-export const TokenContext = createContext();
-
-export const useTokenContext = () => {
-  return useContext(TokenContext);
-};
-
-export const TokenContextProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(
-    localStorage.getItem("access-token")
-  );
-  const [refreshToken, setRefreshToken] = useState(null);
-  return (
-    <TokenContext.Provider
-      value={{ accessToken, setAccessToken, refreshToken, setRefreshToken }}
-    >
-      {children}
-    </TokenContext.Provider>
-  );
-};
+SELECT users.name
+FROM project_members 
+JOIN projects ON project_members.project_id = projects.id
+JOIN users ON project_members.user = users.id
+WHERE projects.id = 2;

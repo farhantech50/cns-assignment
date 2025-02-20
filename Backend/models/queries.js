@@ -106,3 +106,30 @@ export async function findProjectById(id) {
   );
   return { success: true, message: rows };
 }
+
+export async function findProjectMembers(id) {
+  const [rows] = await pool.query(
+    `
+    SELECT users.name
+    FROM project_members 
+    JOIN projects ON project_members.project_id = projects.id
+    JOIN users ON project_members.user = users.id
+    WHERE projects.id = ${id};
+  `
+  );
+  let memberNames = [];
+  rows.map((data) => {
+    memberNames.push(data.name);
+  });
+  return { success: true, message: memberNames };
+}
+
+export async function findAllProject() {
+  const [rows] = await pool.query(
+    `
+  SELECT * 
+  FROM projects
+  `
+  );
+  return { success: true, message: rows };
+}

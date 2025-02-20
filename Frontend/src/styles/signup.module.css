@@ -1,0 +1,62 @@
+/* Styling for the signup container */
+.signupContainer {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Title */
+.signupContainer h2 {
+  text-align: center;
+  color: #333;
+}
+
+/* Form styling */
+.signupForm {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form group styling */
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.formGroup input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.formGroup input:focus {
+  border-color: #29bb89;
+  outline: none;
+}
+
+/* Submit button styling */
+.submitButton {
+  padding: 12px 20px;
+  background-color: #29bb89;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submitButton:hover {
+  background-color: #116e4e;
+}

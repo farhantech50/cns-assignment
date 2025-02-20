@@ -20,7 +20,7 @@ const useLogin = () => {
       // localStorage
       localStorage.setItem("user-details", JSON.stringify(data));
       localStorage.setItem("access-token", JSON.stringify(data.accessToken));
-      //setAccessToken(data.accessToken);
+
       setAuthUser(data);
       return data;
     } catch (error) {

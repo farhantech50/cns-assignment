@@ -166,3 +166,25 @@ export async function deleteProjectById(id) {
     };
   }
 }
+export async function editProjectById(
+  id,
+  name,
+  intro,
+  ownerId,
+  status,
+  startDateTime,
+  endDateTime,
+  projectMembers
+) {
+  console.log(
+    id,
+    name,
+    intro,
+    ownerId,
+    status,
+    startDateTime,
+    endDateTime,
+    projectMembers
+  );
+  return { success: true, message: "Hello" };
+}

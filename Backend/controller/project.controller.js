@@ -4,6 +4,7 @@ import {
   findProjectMembers,
   findAllProject,
   deleteProjectById,
+  editProjectById,
 } from "../models/queries.js";
 import { getUserByID } from "../models/queries.js";
 
@@ -104,6 +105,40 @@ export const deleteProject = async (req, res) => {
 
   try {
     deleteProjectById(id).then((result) => {
+      if (result.success) {
+        res.status(200).json({ message: result.message });
+      } else {
+        res.status(500).json({ message: result.message });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
+export const editProject = async (req, res) => {
+  const { id } = req.params;
+  const {
+    name,
+    intro,
+    ownerId,
+    status,
+    startDateTime,
+    endDateTime,
+    projectMembers,
+  } = req.body;
+
+  try {
+    editProjectById(
+      id,
+      name,
+      intro,
+      ownerId,
+      status,
+      startDateTime,
+      endDateTime,
+      projectMembers
+    ).then((result) => {
       if (result.success) {
         res.status(200).json({ message: result.message });
       } else {

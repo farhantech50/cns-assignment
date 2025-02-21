@@ -9,7 +9,7 @@ const CreateProjectForm = ({ currentUser, projectData }) => {
   const { authUser } = useAuthContext();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showFailDialog, setShowFailDialog] = useState(false);
-  const { project } = useCreateProject();
+  const { project, editProject } = useCreateProject();
   const [signupError, setSignupError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -103,39 +103,64 @@ const CreateProjectForm = ({ currentUser, projectData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.status === "pre" && formData.startDateTime) {
-      setError("Start date must be empty for 'Pre' status.");
-      return;
-    }
+    if (projectData) {
+      try {
+        const response = await editProject(
+          projectData.id,
+          formData.name,
+          formData.intro,
+          authUser.userId,
+          formData.status,
+          formData.startDateTime,
+          formData.endDateTime,
+          formData.projectMembers
+        );
+        console.log(response);
+      } catch (error) {
+        if (error.response && error.response.status === 500) {
+          console.log(error);
+        } else {
+          console.error("Unexpected error:", error.message || error);
+        }
+      }
+    } else {
+      if (formData.status === "pre" && formData.startDateTime) {
+        setError("Start date must be empty for 'Pre' status.");
+        return;
+      }
 
-    if (formData.endDateTime && formData.startDateTime > formData.endDateTime) {
-      setError("End date cannot be before start date.");
-      return;
-    }
-    try {
-      const response = await project(
-        formData.name,
-        formData.intro,
-        authUser.userId,
-        formData.status,
-        formData.startDateTime,
-        formData.endDateTime,
-        formData.projectMembers
-      );
+      if (
+        formData.endDateTime &&
+        formData.startDateTime > formData.endDateTime
+      ) {
+        setError("End date cannot be before start date.");
+        return;
+      }
+      try {
+        const response = await project(
+          formData.name,
+          formData.intro,
+          authUser.userId,
+          formData.status,
+          formData.startDateTime,
+          formData.endDateTime,
+          formData.projectMembers
+        );
 
-      if (response.success) {
-        handleSignupSuccess();
-      } else {
-        setSignupError(response.message);
+        if (response.success) {
+          handleSignupSuccess();
+        } else {
+          setSignupError(response.message);
+          handleSignupFail();
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 500) {
+          console.log(error);
+        } else {
+          console.error("Unexpected error:", error.message || error);
+        }
         handleSignupFail();
       }
-    } catch (error) {
-      if (error.response && error.response.status === 500) {
-        console.log(error);
-      } else {
-        console.error("Unexpected error:", error.message || error);
-      }
-      handleSignupFail();
     }
   };
 

@@ -3,6 +3,7 @@ import { useAuthContext } from "../contexts/authContext";
 import ProjectTable from "./MyProjectTable";
 import useApi from "../hooks/useApi";
 import Modal from "../components/Modal";
+import styles from "../styles/projectForm.module.css";
 
 function MyProjects() {
   const api = useApi();
@@ -10,6 +11,21 @@ function MyProjects() {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showFailDialog, setShowFailDialog] = useState(false);
+
+  // Function to handle signup success
+  const handleDeleteSuccess = () => {
+    setShowSuccessDialog(true); // Show the dialog box
+    setTimeout(() => setShowSuccessDialog(false), 3000);
+  };
+
+  // Function to handle signup fail
+  const handleDeleteFail = () => {
+    setShowFailDialog(true); // Show the dialog box
+    setTimeout(() => setShowFailDialog(false), 3000);
+  };
+
   const handleView = async (id) => {
     const project = projects.find((proj) => proj.id === id);
     const response = await api.get(`/project/projectMember/${id}`);
@@ -25,8 +41,18 @@ function MyProjects() {
     console.log(`Editing project with ID: ${id}`);
   };
 
-  const handleDelete = (id) => {
-    setProjects(projects.filter((project) => project.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      const response = await api.get(`/project/deleteProject/${id}`);
+      console.log(response);
+      if (response.status == 200) {
+        setProjects(projects.filter((project) => project.id !== id));
+        handleDeleteSuccess();
+      }
+    } catch (error) {
+      handleDeleteFail();
+      console.error(error.response.data.message);
+    }
   };
 
   useEffect(() => {
@@ -58,6 +84,18 @@ function MyProjects() {
         onClose={() => setIsModalOpen(false)}
         project={selectedProject}
       />
+      {/* Dialog Box */}
+      {showSuccessDialog && (
+        <div className={styles.dialogBox}>
+          <p>Project deleted successfully</p>
+        </div>
+      )}
+      {/* Dialog Box */}
+      {showFailDialog && (
+        <div className={styles.failDialogBox}>
+          <p>Error deleting project</p>
+        </div>
+      )}
     </div>
   );
 }

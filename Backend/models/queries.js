@@ -148,3 +148,21 @@ export async function getUserByID(id) {
   );
   return rows[0].name;
 }
+export async function deleteProjectById(id) {
+  const [rows] = await pool.query(
+    `
+  DELETE FROM projects
+  WHERE id = ${id}
+  `,
+    [id]
+  );
+
+  if (rows.affectedRows > 0) {
+    return { success: true, message: "Project Deleted Successfully" };
+  } else {
+    return {
+      success: false,
+      message: "Error deleting the project",
+    };
+  }
+}

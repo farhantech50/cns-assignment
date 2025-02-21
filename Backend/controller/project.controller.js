@@ -3,6 +3,7 @@ import {
   findProjectById,
   findProjectMembers,
   findAllProject,
+  deleteProjectById,
 } from "../models/queries.js";
 import { getUserByID } from "../models/queries.js";
 
@@ -91,6 +92,22 @@ export const projectMembers = async (req, res) => {
         res.status(200).json({ message: result.message });
       } else {
         res.status(500).json({ message: "Internal Server Error" });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
+export const deleteProject = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    deleteProjectById(id).then((result) => {
+      if (result.success) {
+        res.status(200).json({ message: result.message });
+      } else {
+        res.status(500).json({ message: result.message });
       }
     });
   } catch (error) {

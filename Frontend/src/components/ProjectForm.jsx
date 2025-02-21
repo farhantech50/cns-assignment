@@ -4,7 +4,7 @@ import { useAuthContext } from "../contexts/authContext";
 import useApi from "../hooks/useApi";
 import useCreateProject from "../hooks/useCreateProject";
 
-const CreateProjectForm = ({ currentUser }) => {
+const CreateProjectForm = ({ currentUser, projectData }) => {
   const api = useApi();
   const { authUser } = useAuthContext();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -20,9 +20,33 @@ const CreateProjectForm = ({ currentUser }) => {
     endDateTime: "",
     projectMembers: [],
   });
+  const [formTitle, setFormTitle] = useState({
+    title: "Create New Project",
+    buttonText: "Submit",
+  });
 
   const [members, setMembers] = useState([]);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (projectData) {
+      setFormTitle((prev) => ({
+        ...prev,
+        title: "Edit Project",
+        buttonText: "Save",
+      }));
+
+      setFormData((prev) => ({
+        ...prev,
+        name: projectData.name,
+        intro: projectData.intro,
+        owner: projectData.owner,
+        status: projectData.status,
+        startDateTime: String(projectData.startDateTime).slice(0, 10),
+        endDateTime: String(projectData.endDateTime).slice(0, 10),
+      }));
+    }
+  }, [projectData]);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -117,7 +141,7 @@ const CreateProjectForm = ({ currentUser }) => {
 
   return (
     <div className={styles.projectFormContainer}>
-      <h2>Create New Project</h2>
+      <h2>{formTitle.title}</h2>
       {error && <p className={styles.errorMessage}>{error}</p>}
 
       <form onSubmit={handleSubmit}>
@@ -250,7 +274,7 @@ const CreateProjectForm = ({ currentUser }) => {
         </div>
 
         <button type="submit" className={styles.submitButton}>
-          Create Project
+          {formTitle.buttonText}
         </button>
       </form>
       {/* Dialog Box */}

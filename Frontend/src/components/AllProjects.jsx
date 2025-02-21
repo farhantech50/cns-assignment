@@ -8,6 +8,7 @@ function AllProjects() {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mode, setMode] = useState("view"); // "view" or "edit"
 
   const handleView = async (id) => {
     const project = projects.find((proj) => proj.id === id);
@@ -41,6 +42,7 @@ function AllProjects() {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         project={selectedProject}
+        mode={mode}
       />
     </div>
   );

@@ -11,8 +11,10 @@ function MyProjects() {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showFailDialog, setShowFailDialog] = useState(false);
+  const [mode, setMode] = useState("view"); // "view" or "edit"
 
   // Function to handle signup success
   const handleDeleteSuccess = () => {
@@ -28,17 +30,22 @@ function MyProjects() {
 
   const handleView = async (id) => {
     const project = projects.find((proj) => proj.id === id);
+
     const response = await api.get(`/project/projectMember/${id}`);
     const updatedProject = {
       ...project,
       projectMembers: response.data.message,
     };
     setSelectedProject(updatedProject);
+    setMode("view");
     setIsModalOpen(true); // Open Modal
   };
 
   const handleEdit = (id) => {
-    console.log(`Editing project with ID: ${id}`);
+    const project = projects.find((proj) => proj.id === id);
+    setSelectedProject(project);
+    setMode("edit");
+    setIsModalOpen(true); // Open Modal
   };
 
   const handleDelete = async (id) => {
@@ -83,6 +90,7 @@ function MyProjects() {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         project={selectedProject}
+        mode={mode}
       />
       {/* Dialog Box */}
       {showSuccessDialog && (

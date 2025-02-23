@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { newAccessToken } from "./utils/generateToken.js";
 import database from "./models/databaseConnection.js";
+import { newPDF } from "./controller/pdf.controller.js";
 
 // Initialize express app
 const app = express();

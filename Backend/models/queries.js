@@ -198,7 +198,6 @@ export async function editProjectById(
   }
 
   if (rows.affectedRows > 0) {
-    console.log("Project Edited Successfully");
     return { success: true, message: "Project Edited Successfully" };
   } else {
     return {

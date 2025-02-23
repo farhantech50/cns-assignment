@@ -176,15 +176,34 @@ export async function editProjectById(
   endDateTime,
   projectMembers
 ) {
-  console.log(
-    id,
-    name,
-    intro,
-    ownerId,
-    status,
-    startDateTime,
-    endDateTime,
-    projectMembers
+  const [rows] = await pool.query(
+    `UPDATE projects SET name = ?, intro = ?, owner_id = ?, status=?, startDateTime=?, endDateTime=? WHERE id = ?`,
+    [name, intro, ownerId, status, startDateTime, endDateTime, id]
   );
-  return { success: true, message: "Hello" };
+  if (projectMembers.length > 0) {
+    await pool.query(
+      `
+      DELETE FROM project_members WHERE project_id = ?`,
+      [id]
+    );
+
+    // Insert project members
+    const values = projectMembers.map((userId) => [id, userId]);
+    await pool.query(
+      `
+      INSERT INTO project_members (project_id, user) VALUES ?
+      `,
+      [values]
+    );
+  }
+
+  if (rows.affectedRows > 0) {
+    console.log("Project Edited Successfully");
+    return { success: true, message: "Project Edited Successfully" };
+  } else {
+    return {
+      success: false,
+      message: "Error editing the project",
+    };
+  }
 }

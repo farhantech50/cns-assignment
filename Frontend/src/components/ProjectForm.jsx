@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/projectForm.module.css"; // Ensure CSS file exists
 import { useAuthContext } from "../contexts/authContext";
+import { useTableUpdateContext } from "../contexts/tableUpdateContext";
 import useApi from "../hooks/useApi";
 import useCreateProject from "../hooks/useCreateProject";
 
 const CreateProjectForm = ({ currentUser, projectData }) => {
   const api = useApi();
   const { authUser } = useAuthContext();
+  const { setTableUpdate } = useTableUpdateContext();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showFailDialog, setShowFailDialog] = useState(false);
   const { project, editProject } = useCreateProject();
@@ -35,7 +37,6 @@ const CreateProjectForm = ({ currentUser, projectData }) => {
         title: "Edit Project",
         buttonText: "Save",
       }));
-
       setFormData((prev) => ({
         ...prev,
         name: projectData.name,
@@ -60,6 +61,7 @@ const CreateProjectForm = ({ currentUser, projectData }) => {
 
     fetchMembers();
   }, []);
+
   useEffect(() => {
     const changeStartDate = async () => {
       if (formData.status == "pre") {
@@ -115,7 +117,13 @@ const CreateProjectForm = ({ currentUser, projectData }) => {
           formData.endDateTime,
           formData.projectMembers
         );
-        console.log(response);
+        if (response.success) {
+          setTableUpdate((prev) => !prev); // Toggle between true and false
+          handleSignupSuccess();
+        } else {
+          setSignupError(response.message);
+          handleSignupFail();
+        }
       } catch (error) {
         if (error.response && error.response.status === 500) {
           console.log(error);

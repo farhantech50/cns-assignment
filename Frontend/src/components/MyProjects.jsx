@@ -4,10 +4,12 @@ import ProjectTable from "./MyProjectTable";
 import useApi from "../hooks/useApi";
 import Modal from "../components/Modal";
 import styles from "../styles/projectForm.module.css";
+import { useTableUpdateContext } from "../contexts/tableUpdateContext";
 
 function MyProjects() {
   const api = useApi();
   const { authUser } = useAuthContext();
+  const { tableUpdate, setTableUpdate } = useTableUpdateContext();
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,6 +51,13 @@ function MyProjects() {
   };
 
   const handleDelete = async (id) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this project?"
+    );
+
+    if (!isConfirmed) {
+      return; // Do nothing if the user cancels the deletion
+    }
     try {
       const response = await api.get(`/project/deleteProject/${id}`);
       console.log(response);
@@ -75,7 +84,7 @@ function MyProjects() {
     };
 
     fetchMyProjects();
-  }, []);
+  }, [tableUpdate]);
 
   return (
     <div>

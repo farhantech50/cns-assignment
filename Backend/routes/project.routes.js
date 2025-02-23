@@ -12,13 +12,13 @@ import { newPDF } from "../controller/pdf.controller.js";
 import { authenticate, adminAllowed } from "../middleware/protect.js";
 const router = express.Router();
 
-router.use(authenticate);
+//router.use(authenticate);
 router.post("/newProject", newProject);
 router.post("/editProject/:id", editProject);
 router.get("/deleteProject/:id", deleteProject);
 router.get("/allProject", allProject);
 router.get("/projectById/:id", projectById);
 router.get("/projectMember/:id", projectMembers);
-router.get("/generatePdf", newPDF);
+router.get("/generatePdf/:id", newPDF);
 
 export default router;

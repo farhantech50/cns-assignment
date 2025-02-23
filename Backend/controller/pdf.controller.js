@@ -3,14 +3,22 @@ import PDFDocument from "../utils/pdfkit-table.js";
 import { allProject } from "./project.controller.js";
 
 export const newPDF = async (req, res) => {
+  const { id } = req.params;
   // Set response headers to indicate a file download
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader("Content-Disposition", "attachment; filename=projects.pdf");
 
   let projects = [];
+  let allProjects;
 
   try {
-    const allProjects = await fetch("http://localhost:3000/project/allProject");
+    if (id == "all") {
+      allProjects = await fetch("http://localhost:3000/project/allProject");
+    } else {
+      allProjects = await fetch(
+        `http://localhost:3000/project/projectById/${id}`
+      );
+    }
     const Projects = await allProjects.json();
     projects = Projects.message;
   } catch (error) {
@@ -28,10 +36,10 @@ export const newPDF = async (req, res) => {
   doc
     .fillColor("#444444")
     .fontSize(20)
-    .text("Project Information.", 110, 57)
+    .text("Project Information", 110, 57)
     .fontSize(10)
-    .text("725 Fowler Avenue", 200, 65, { align: "right" })
-    .text("Chamblee, GA 30341", 200, 80, { align: "right" })
+    .text("CNS Assignment", 200, 65, { align: "right" })
+    .text("Report", 200, 80, { align: "right" })
     .moveDown();
 
   // Create the table

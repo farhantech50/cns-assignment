@@ -20,6 +20,14 @@ function AllProjects() {
     setSelectedProject(updatedProject);
     setIsModalOpen(true); // Open Modal
   };
+  const handleDownloadPDF = async () => {
+    const response = await fetch(
+      "http://localhost:3000/project/generatePdf/all"
+    );
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+  };
 
   useEffect(() => {
     const fetchMyProjects = async () => {
@@ -35,8 +43,32 @@ function AllProjects() {
   }, []);
 
   return (
-    <div>
+    <div
+      style={{
+        position: "relative",
+        padding: "20px",
+        border: "1px solid #ddd",
+      }}
+    >
       <h2>All Projects List</h2>
+
+      <button
+        onClick={handleDownloadPDF}
+        style={{
+          position: "absolute",
+          top: "50px",
+          right: "20px",
+          background: "#09bd27",
+          color: "#fff",
+          border: "none",
+          padding: "10px 15px",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Generate Report
+      </button>
+
       <ProjectTable projects={projects} onView={handleView} />
       <Modal
         open={isModalOpen}

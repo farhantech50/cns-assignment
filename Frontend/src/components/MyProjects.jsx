@@ -68,7 +68,7 @@ function MyProjects() {
       return; // Do nothing if the user cancels the deletion
     }
     try {
-      const response = await api.get(`/project/deleteProject/${id}`);
+      const response = await api.delete(`/project/deleteProject/${id}`);
       console.log(response);
       if (response.status == 200) {
         setProjects(projects.filter((project) => project.id !== id));

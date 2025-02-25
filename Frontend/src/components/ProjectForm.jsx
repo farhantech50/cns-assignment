@@ -4,6 +4,7 @@ import { useAuthContext } from "../contexts/authContext";
 import { useTableUpdateContext } from "../contexts/tableUpdateContext";
 import useApi from "../hooks/useApi";
 import useCreateProject from "../hooks/useCreateProject";
+import { ToastContainer, toast } from "react-toastify";
 
 const CreateProjectForm = ({ currentUser, projectData }) => {
   const api = useApi();
@@ -156,8 +157,28 @@ const CreateProjectForm = ({ currentUser, projectData }) => {
         );
 
         if (response.success) {
+          toast.success(response.message.message, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
           handleSignupSuccess();
         } else {
+          toast.error(response.message, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
           setSignupError(response.message);
           handleSignupFail();
         }
@@ -322,6 +343,7 @@ const CreateProjectForm = ({ currentUser, projectData }) => {
           <p>{signupError}</p>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

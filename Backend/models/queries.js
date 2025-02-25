@@ -1,5 +1,6 @@
 import pool from "./databaseConnection.js";
 import bcrypt from "bcryptjs";
+import db from "../models/db.js";
 
 export async function createUser(
   name,

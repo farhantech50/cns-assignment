@@ -1,0 +1,11 @@
+npx knex migrate:make create_project_members_table
+
+npx knex migrate:latest  
+
+npx knex seed:make seed_projects
+
+npx knex seed:run --specific=seed_users.js 
+
+npx knex seed:run --specific=seed_projects.js
+
+npx knex seed:run --specific=seed_project_members.js
